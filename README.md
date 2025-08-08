@@ -1,6 +1,6 @@
 # 🎮 RED ZONE: Arsenal Update
 
-A thrilling top-down survival shooter where you defend the perimeter against waves of zombies using an arsenal of weapons and defensive structures.
+A thrilling top-down survival shooter set in the year 2047, where you defend Sector 7 against waves of mutated creatures and rogue AI constructs using an arsenal of weapons and AI-bonded animal companions.
 
 ![RED ZONE Gameplay](https://img.shields.io/badge/Status-Playable-brightgreen)
 ![Version](https://img.shields.io/badge/Version-Arsenal%20Update-blue)
@@ -8,59 +8,95 @@ A thrilling top-down survival shooter where you defend the perimeter against wav
 ![Made with Cursor](https://img.shields.io/badge/Made%20with-Cursor%20AI-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-## 🎯 Game Overview
+## 🌍 **The Story**
 
-RED ZONE is an intense survival shooter where you must hold your ground against increasingly difficult waves of enemies. With the Arsenal Update, you now have access to multiple weapons, defensive structures, and AI allies to help you survive.
+**The year is 2047.** You are **Captain Favnon Peng**, elite tactical specialist and leading the last defenders of **Sector 7**, a critical military outpost on the edge of the **Red Zone** - a wasteland overrun by mutated creatures and rogue AI constructs.
 
-## ✨ Features
+After the AI uprising of 2042, humanity's last strongholds are scattered across the globe. Sector 7 houses critical research data and the last known cure for the neural plague that's spreading through the remaining population. The facility's experimental neural enhancement programs have created enhanced human operatives with **AI-bonded animal companions** - all fighting to preserve what remains of civilization.
+
+**Your mission:** Hold the perimeter at all costs. The enemy waves are endless, but you must survive. Use every weapon, every strategy, every ally at your disposal. The fate of humanity depends on your survival.
+
+*The Red Zone doesn't forgive. The Red Zone doesn't forget. The Red Zone is coming for you.*
+
+## ✨ **Game Features**
 
 ### 🎯 **Weapon Arsenal**
-- **Pistol** - Reliable starting weapon
-- **SMG** - Rapid-fire automatic weapon
-- **Shotgun** - Devastating close-range damage
-- **Marksman Rifle** - High-precision long-range weapon
-- **LMG** - Heavy firepower with large magazine
-- **Sniper Rifle** - Extreme damage with piercing rounds
-- **Grenade Launcher** - Explosive area damage
-- **Flamethrower** - Continuous fire with burn damage
+- **Pistol** - Reliable starting weapon with balanced stats
+- **SMG** - Rapid-fire automatic weapon for close combat
+- **Shotgun** - Devastating close-range damage with spread pellets
+- **Marksman Rifle** - High-precision long-range weapon with piercing rounds
+- **LMG** - Heavy firepower with large magazine capacity
+- **Sniper Rifle** - Extreme damage with multiple pierce capability
+- **Grenade Launcher** - Explosive area damage with splash effects
+- **Flamethrower** - Continuous fire with burn damage over time
 
 ### 🏗️ **Defensive Structures**
-- **Turrets** - Automated defense with multiple types:
-  - Basic Turret - Balanced firepower
-  - Heavy Turret - High damage, slower fire rate
-  - Sniper Turret - Long-range precision
-  - Shotgun Turret - Close-range spread damage
-  - Flamethrower Turret - Continuous fire with burn effects
-- **Barricades** - Block enemy movement and provide cover
-- **Vines** - Slow and damage enemies
+- **Turrets** - Automated defense with 5 specialized types:
+  - **Basic Turret** - Balanced firepower and range
+  - **Heavy Turret** - High damage, slower fire rate, armored
+  - **Sniper Turret** - Long-range precision with piercing rounds
+  - **Shotgun Turret** - Close-range spread damage with multiple pellets
+  - **Flamethrower Turret** - Continuous fire with burn effects
+- **Barricades** - Block enemy movement and provide cover (perpendicular placement)
+- **Vines** - Slow and damage enemies over time
 - **Mines** - Explosive traps for area denial
+- **Healing Platforms** - Restore ally health and attract all companions
 
-### 🤖 **AI Allies**
-- **Wolf** - Fast, aggressive soldiers
-- **Bear** - Steady, high-damage units
-- **Owl** - Precise long-range support
-- **Fennec** - Quick, evasive fighters
-- **Dolphin** - Healing and revival support
+### 🤖 **AI-Bonded Animal Companions**
+Each companion has unique personalities, abilities, and speech patterns:
 
-### 🎮 **Gameplay Mechanics**
-- **Wave System** - Progressive difficulty with boss battles
-- **Combo System** - Chain kills for bonus points
+- **Wolf** - Fast, aggressive hunter with pack mentality
+  - *"*Howl* Ready to hunt!"*
+  - *"*Growl* We're the pack!"*
+- **Bear** - Steady, high-damage tank with brute strength
+  - *"*Roar* Heavy support here!"*
+  - *"*Growl* I am strength!"*
+- **Owl** - Precise long-range support with tactical awareness
+  - *"*Screech* Eyes in the sky!"*
+  - *"*Cry* I see everything!"*
+- **Fennec** - Quick, evasive fighter with agility
+  - *"*Yip* Swift and deadly!"*
+  - *"*Bark* Speed is my weapon!"*
+- **Dolphin** - Advanced healing and revival specialist
+  - *"*Click* I sense injuries nearby!"*
+  - *"*Whistle* My healing instincts are strong!"*
+  - **Revival Ability**: Can resurrect fallen allies at graves
+
+### 🎮 **Advanced Gameplay Mechanics**
+- **Wave System** - Progressive difficulty with boss battles at waves 5, 10, 15
+- **Boss Encounters** - Unique bosses with special abilities:
+  - **Necromancer Boss** - Summons undead minions
+  - **Titan Boss** - Massive damage and earthquake attacks
+- **Combo System** - Chain kills for bonus points and power-ups
 - **Power Mode** - Rare activation for devastating firepower
-- **Special Abilities** - Random powerful effects
-- **Auto-Reload** - Automatic weapon reloading
-- **Damage Numbers** - Visual feedback for hits
-- **Healing Platforms** - Restore ally health
-- **Graveyard System** - Fallen allies leave graves
-- **Revival Mechanics** - Dolphin can revive fallen allies
+- **Special Abilities** - Random powerful effects during combat
+- **Auto-Reload** - Automatic weapon reloading (always enabled)
+- **Damage Numbers** - Visual feedback for hits and critical strikes
+- **Healing Platforms** - Strategic placement to restore ally health
+- **Graveyard System** - Fallen allies leave graves that can be visited
+- **Revival Mechanics** - Dolphin can revive fallen allies at graves
+- **Tactical Retreats** - Allies automatically fall back when low on health
+- **Ally Death Reactions** - Surviving companions react emotionally to fallen allies
 
-### 🎨 **Visual & Audio Features**
-- **Procedural 8-bit Music** - Dynamic background music
-- **Particle Effects** - Enhanced visual feedback
-- **Dynamic Weather** - Rain, lightning, and fog effects
-- **Procedural Background** - Industrial cityscape
-- **Screen Effects** - Blood splatter, camera flash, screen shake
+### 🎨 **Immersive Visual & Audio Features**
+- **Procedural 8-bit Music** - Dynamic background music that adapts to gameplay intensity
+- **Enhanced Particle Effects** - Explosions, muzzle flashes, hits, and dramatic death effects
+- **Dynamic Weather** - Rain, lightning, and fog effects that affect gameplay
+- **Procedural Background** - Industrial cityscape with detailed buildings and corruption
+- **Screen Effects** - Blood splatter, camera flash, screen shake for dramatic moments
+- **Atmospheric Design** - Dark, gritty survival aesthetic with Red Zone corruption
+- **Speech Bubbles** - Dynamic dialogue from companions and enemies
+- **Dramatic Death Effects** - Intense visual and audio feedback for ally deaths
 
-## 🎮 Controls
+### 🏗️ **Advanced Systems**
+- **Skill Tree** - Upgrade health, speed, damage, reload, and stamina
+- **Settings Menu** - Customize audio, graphics, and gameplay options
+- **Controls Help** - Comprehensive control reference
+- **Credits Screen** - Game development information
+- **Minimap** - Real-time map of all game entities
+- **HUD System** - Dynamic display of player stats, wave info, and resources
+
+## 🎮 **Controls**
 
 ### **Movement & Combat**
 - **WASD** - Move
@@ -75,7 +111,7 @@ RED ZONE is an intense survival shooter where you must hold your ground against 
 
 ### **Defensive Structures**
 - **T** - Place turret
-- **B** - Place barricade
+- **B** - Place barricade (perpendicular to aim direction)
 - **V** - Place vines
 - **M** - Place mine
 - **H** - Place healing platform
@@ -83,90 +119,90 @@ RED ZONE is an intense survival shooter where you must hold your ground against 
 ### **Special Actions**
 - **Q** - Activate special ability
 - **F** - Toggle damage numbers
-- **R** - Toggle auto-reload
 - **Esc** - Pause game
 
-## 🚀 How to Play
+## 🚀 **How to Play**
 
-1. **Start the Game** - Click "Enter the Red Zone" to begin
-2. **Prepare** - Use the first 20 seconds to place defensive structures
+1. **Enter the Red Zone** - Click "Enter the Red Zone" to begin your mission
+2. **Prepare** - Use the first 20 seconds to place defensive structures strategically
 3. **Survive** - Defend against waves of enemies from all directions
-4. **Collect** - Pick up weapon drops and power-ups
-5. **Upgrade** - Unlock new weapons and improve your arsenal
-6. **Survive** - Reach higher waves for greater challenges
+4. **Collect** - Pick up weapon drops and power-ups to expand your arsenal
+5. **Coordinate** - Work with your AI-bonded animal companions
+6. **Adapt** - Use different weapons and strategies for different situations
+7. **Survive** - Reach higher waves for greater challenges and boss encounters
 
-## 🎯 Gameplay Tips
+## 🎯 **Advanced Gameplay Tips**
 
-### **Early Game**
+### **Early Game (Waves 1-5)**
 - Place turrets strategically around your position
 - Use barricades to create chokepoints
 - Collect weapon drops to expand your arsenal
 - Stay mobile to avoid being surrounded
+- Coordinate with your animal companions
 
-### **Mid Game**
+### **Mid Game (Waves 6-15)**
 - Manage your ammunition carefully
 - Use special abilities at key moments
-- Coordinate with AI allies
-- Build combos for bonus points
+- Coordinate with AI allies for maximum effectiveness
+- Build combos for bonus points and power-ups
+- Place healing platforms strategically
+- Prepare for boss encounters
 
-### **Late Game**
+### **Late Game (Waves 16+)**
 - Master weapon switching for different situations
 - Use power mode strategically
 - Maintain defensive structures
-- Prepare for boss battles
+- Prepare for multiple boss battles
+- Utilize the Dolphin's revival abilities
+- Coordinate tactical retreats
 
-## 🏆 Scoring System
+### **Boss Strategies**
+- **Necromancer Boss**: Focus fire and eliminate summoned minions quickly
+- **Titan Boss**: Use mobility and ranged weapons, avoid close combat
+- **Regular Bosses**: Coordinate with allies and use all available resources
+
+## 🏆 **Scoring & Progression**
 
 - **Base Score** - Points for each enemy killed
 - **Combo Multiplier** - Chain kills for bonus points
 - **Wave Bonus** - Higher waves give more points
 - **Survival Time** - Longer survival = higher score
+- **Boss Kills** - Special rewards for defeating bosses
+- **Ally Survival** - Bonus points for keeping companions alive
 
-## 🎨 Visual Features
-
-- **Dynamic Lighting** - Day/night cycle affects visibility
-- **Particle Effects** - Explosions, muzzle flashes, and impacts
-- **Smooth Animations** - Fluid movement and combat
-- **Visual Feedback** - Damage numbers, health bars, and status effects
-- **Atmospheric Design** - Dark, gritty survival aesthetic
-
-## 🎵 Audio Features
-
-- **Procedural Sound Effects** - Dynamic weapon sounds
-- **Impact Audio** - Realistic hit and explosion sounds
-- **Atmospheric Audio** - Immersive game environment
-- **8-bit Music Generation** - Dynamic background music
-
-## 🛠️ Technical Details
+## 🎨 **Technical Features**
 
 - **Pure HTML5/JavaScript** - No external dependencies
 - **Canvas Rendering** - Smooth 60fps gameplay
+- **Web Audio API** - Dynamic music and sound generation
 - **Responsive Design** - Works on various screen sizes
 - **Cross-Platform** - Runs in any modern web browser
+- **Local Storage** - Settings and progress persistence
+- **Performance Optimized** - Efficient rendering and update loops
 
-## 🚀 Installation
+## 🚀 **Installation**
 
-### Browser Version
+### **Browser Version**
 1. Download the `index.html` file
 2. Open it in any modern web browser
-3. Click "Enter the Red Zone" to start playing
+3. Click "Enter the Red Zone" to start your mission
 
-### Desktop Version
+### **Desktop Version**
 Download the latest release for your platform:
-- **Windows**: `redzone-windows.exe`
-- **macOS**: `redzone-macos.app`
-- **Linux**: `redzone-linux`
+- **Windows**: `RED ZONE Setup 1.0.0.exe`
+- **macOS Intel**: `RED ZONE-1.0.0.dmg`
+- **macOS Apple Silicon**: `RED ZONE-1.0.0-arm64.dmg`
 
-## 🛠️ Development
+## 🛠️ **Development**
 
-### Prerequisites
+### **Prerequisites**
 - Modern web browser (Chrome, Firefox, Safari, Edge)
 - No additional dependencies required
 
-### Local Development
+### **Local Development**
 1. Clone the repository:
 ```bash
-git clone https://github.com/fabiovotta/redzone.git
+git clone https://github.com/favstats/redzone.git
 cd redzone
 ```
 
@@ -184,9 +220,9 @@ php -S localhost:8000
 
 3. Navigate to `http://localhost:8000` in your browser
 
-## 📦 Building Desktop Version
+## 📦 **Building Desktop Version**
 
-### Using Electron
+### **Using Electron**
 1. Install Node.js and npm
 2. Install dependencies:
 ```bash
@@ -203,9 +239,9 @@ npm run build
 node build.js
 ```
 
-## 🎨 Game Architecture
+## 🎨 **Game Architecture**
 
-### Core Systems
+### **Core Systems**
 - **Game Loop**: 60 FPS update and render cycle
 - **Entity System**: Player, enemies, allies, projectiles, and structures
 - **AI System**: Pathfinding, behavior trees, and personality-based actions
@@ -213,14 +249,14 @@ node build.js
 - **Particle System**: Visual effects and feedback
 - **UI System**: HUD, menus, and screen management
 
-### Technical Features
+### **Advanced Features**
 - **Canvas 2D Rendering**: Smooth graphics and animations
 - **Web Audio API**: Dynamic music and sound generation
 - **Local Storage**: Settings and progress persistence
 - **Responsive Design**: Works on various screen sizes
 - **Performance Optimized**: Efficient rendering and update loops
 
-## 🌐 Browser Compatibility
+## 🌐 **Browser Compatibility**
 
 - ✅ Chrome/Chromium
 - ✅ Firefox
@@ -228,13 +264,13 @@ node build.js
 - ✅ Edge
 - ✅ Mobile browsers (with touch controls)
 
-## 🎮 Game Modes
+## 🎮 **Game Modes**
 
 - **Survival Mode** - Endless waves with increasing difficulty
-- **Boss Battles** - Special boss encounters at wave 5
+- **Boss Battles** - Special boss encounters at waves 5, 10, 15
 - **Night Mode** - Toggle for atmospheric lighting changes
 
-## 🔧 Customization
+## 🔧 **Customization**
 
 The game includes various settings and features:
 - **Auto-reload** - Automatic weapon reloading
@@ -244,37 +280,37 @@ The game includes various settings and features:
 - **Settings Menu** - Customize audio, graphics, and gameplay
 - **Skill Tree** - Upgrade health, speed, damage, reload, and stamina
 
-## 🤝 Contributing
+## 🤝 **Contributing**
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-### Development Guidelines
+### **Development Guidelines**
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
+## 📄 **License**
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👨‍💻 Author
+## 👨‍💻 **Author**
 
 **Fabio Votta**
 - **GitHub**: [@fabiovotta](https://github.com/fabiovotta)
 - **Game**: Developed with Cursor AI
 
-## 🙏 Acknowledgments
+## 🙏 **Acknowledgments**
 
 - **Cursor AI**: For helping bring this game to life
 - **Web Audio API**: For the procedural music system
 - **Canvas API**: For the smooth graphics and animations
 - **All players**: Who will defend the Red Zone!
 
-## 📈 Roadmap
+## 📈 **Roadmap**
 
-### Future Features
+### **Future Features**
 - [ ] Multiplayer support
 - [ ] More enemy types
 - [ ] Additional weapons and abilities
@@ -282,12 +318,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [ ] Mobile support
 - [ ] Steam release
 
-### Known Issues
+### **Known Issues**
 - Performance may vary on older devices
 - Audio settings require page refresh to apply
 - Some browsers may have minor rendering differences
 
-## 📊 Game Statistics
+## 📊 **Game Statistics**
 
 - **Lines of Code**: ~8,000+
 - **File Size**: ~400KB
@@ -300,3 +336,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 **Ready to enter the RED ZONE?** 🎮
 
 *Survive the waves, master the arsenal, and become the ultimate defender!*
+
+*The fate of humanity depends on your survival.*
