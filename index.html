@@ -262,6 +262,7 @@
         <div class="chip">Barricades: <strong id="barricades">5</strong></div>
         <div class="chip">Vines: <strong id="spikes">3</strong></div>
         <div class="chip">Mines: <strong id="mines">2</strong></div>
+        <div class="chip">Healing: <strong id="healingPlatforms">2</strong></div>
         <div class="chip">Auto-reload: <strong id="autoReload">ON</strong></div>
         <div class="bars">
           <div class="bar" aria-label="Health"><div id="hpFill" class="fill" style="width:100%"></div></div>
@@ -295,6 +296,7 @@
             <span class="kbd">B</span> Place Barricade
             <span class="kbd">V</span> Place Vines
             <span class="kbd">M</span> Place Mine
+            <span class="kbd">H</span> Place Healing
             <span class="kbd">Tab</span> Switch Turret
             <span class="kbd">Q</span> Special
             <span class="kbd">R</span> Toggle Auto-reload
@@ -357,6 +359,7 @@
     barricades: document.getElementById('barricades'),
     spikes: document.getElementById('spikes'),
     mines: document.getElementById('mines'),
+    healingPlatforms: document.getElementById('healingPlatforms'),
     autoReload: document.getElementById('autoReload'),
 
     weaponInfo: document.getElementById('weaponInfo'),
@@ -414,6 +417,7 @@
     barricades: 5, // Number of placeable barricades
     spikes: 3, // Number of placeable spikes
     mines: 2, // Number of placeable mines
+    healingPlatforms: 2, // Number of placeable healing platforms
     turretType: 0, // Current turret type (0=basic, 1=heavy, 2=sniper)
     specialAbility: 'none', // Current special ability
     specialCooldown: 0, // Cooldown for special ability
@@ -428,6 +432,7 @@
   const spikes = []; // Add spikes array
   const mines = []; // Add mines array
   const allies = []; // Add friendly soldiers array
+  const healingPlatforms = []; // Add healing platforms array
 
   // Audio system
   let audioContext, masterGain;
@@ -676,6 +681,10 @@
     if (e.key.toLowerCase() === 'm') {
       placeMine();
     }
+    // Place healing platform with H
+    if (e.key.toLowerCase() === 'h') {
+      placeHealingPlatform();
+    }
     // Switch turret type with Tab
     if (e.key === 'Tab') {
       e.preventDefault();
@@ -847,6 +856,7 @@
     $hud.barricades.textContent = player.barricades;
     $hud.spikes.textContent = player.spikes;
     $hud.mines.textContent = player.mines;
+    $hud.healingPlatforms.textContent = player.healingPlatforms;
     $hud.autoReload.textContent = state.autoReload ? 'ON' : 'OFF';
     
     // Update weapon info with enhanced details
@@ -1115,6 +1125,43 @@
     });
   }
 
+  function placeHealingPlatform() {
+    if (player.healingPlatforms <= 0) return;
+    
+    // Place healing platform at player position
+    const platformX = player.x;
+    const platformY = player.y;
+    
+    healingPlatforms.push({
+      x: platformX,
+      y: platformY,
+      r: 60, // Healing radius
+      healPower: 100, // Total healing power
+      healRate: 5, // Healing per second
+      duration: 15, // Duration in seconds
+      time: 0,
+      active: true,
+      cooldown: 0
+    });
+    
+    player.healingPlatforms--;
+    particlesBurst(platformX, platformY, '#00ff88', 15, 200);
+    sounds.pickup();
+    addMessage('Placed Healing Platform');
+    
+    // Player speech bubble
+    const platformPhrases = ['Healing zone active!', 'Safe haven created!', 'Rest area ready!', 'Healing field deployed!'];
+    const phrase = platformPhrases[Math.floor(Math.random() * platformPhrases.length)];
+    state.speechBubbles.push({
+      x: player.x,
+      y: player.y - 40,
+      text: phrase,
+      time: 0,
+      life: 2.0,
+      owner: null
+    });
+  }
+
   function activateSpecialAbility() {
     // Random special ability
     const abilities = ['timeSlow', 'explosion', 'heal', 'turretBoost'];
@@ -1288,23 +1335,23 @@
 
   const animalCompanions = [
     { name: 'Wolf', color: '#6a5a4a', accent: '#4a3a2a', type: 'wolf', personality: 'aggressive', 
-      arrival: ['*Howl* Ready to hunt!', 'Let\'s track them down!', 'Wolf reporting!'], 
-      motivational: ['*Growl* Keep fighting!', 'We\'re the pack!', 'Stay strong!'] },
+      arrival: ['*Howl* Ready to hunt!', '*Growl* Let\'s track them down!', '*Bark* Wolf reporting!', '*Howl* The pack is here!', '*Growl* Time to hunt!'],
+      motivational: ['*Growl* We\'re the pack!', '*Howl* Keep fighting!', '*Bark* Stay strong!', '*Growl* We\'re unstoppable!', '*Howl* The hunt continues!', '*Bark* We\'re winning!', '*Growl* Nothing stops the pack!', '*Howl* Victory is ours!'] },
     { name: 'Eagle', color: '#8b4513', accent: '#6b3513', type: 'eagle', personality: 'precise', 
-      arrival: ['*Screech* Eyes in the sky!', 'I see everything!', 'Eagle ready!'], 
-      motivational: ['Stay sharp!', 'We\'re soaring!', 'Keep it up!'] },
+      arrival: ['*Screech* Eyes in the sky!', '*Cry* I see everything!', '*Screech* Eagle ready!', '*Cry* From the heavens!', '*Screech* Soaring in!'],
+      motivational: ['*Screech* We\'re soaring!', '*Cry* Stay sharp!', '*Screech* Keep it up!', '*Cry* I see victory!', '*Screech* We\'re flying high!', '*Cry* Precision wins!', '*Screech* The sky is ours!', '*Cry* We\'re unstoppable!'] },
     { name: 'Bear', color: '#8b4513', accent: '#6b3513', type: 'bear', personality: 'steady', 
-      arrival: ['*Roar* Heavy support here!', 'Time to get serious!', 'Bear ready!'], 
-      motivational: ['Stay focused!', 'We\'re unstoppable!', 'Keep fighting!'] },
+      arrival: ['*Roar* Heavy support here!', '*Growl* Time to get serious!', '*Roar* Bear ready!', '*Growl* I am strength!', '*Roar* Let\'s crush them!'],
+      motivational: ['*Roar* We\'re unstoppable!', '*Growl* Stay focused!', '*Roar* Keep fighting!', '*Growl* We\'re the strongest!', '*Roar* Nothing can stop us!', '*Growl* We\'re unbreakable!', '*Roar* We\'re crushing it!', '*Growl* We\'re the best!'] },
     { name: 'Fennec', color: '#f4a460', accent: '#d49450', type: 'fennec', personality: 'alert', 
-      arrival: ['*Yip* Big ears, big heart!', 'I can hear everything!', 'Fennec ready!'], 
-      motivational: ['My ears hear victory!', 'We\'re too cute to lose!', 'Big ears, big success!'] },
+      arrival: ['*Yip* Big ears, big heart!', '*Bark* I can hear everything!', '*Yip* Fennec ready!', '*Bark* My ears are ready!', '*Yip* Cute and deadly!'],
+      motivational: ['*Yip* My ears hear victory!', '*Bark* We\'re too cute to lose!', '*Yip* Big ears, big success!', '*Bark* I hear them coming!', '*Yip* We\'re adorable and deadly!', '*Bark* My ears never fail!', '*Yip* We\'re too cute for them!', '*Bark* Big ears, big wins!'] },
     { name: 'Fox', color: '#ff6b35', accent: '#d4552a', type: 'fox', personality: 'aggressive', 
-      arrival: ['*Yip* Quick and ready!', 'Let\'s move fast!', 'Fox here!'], 
-      motivational: ['Stay quick!', 'We\'re fast!', 'Keep moving!'] },
+      arrival: ['*Yip* Quick and ready!', '*Bark* Let\'s move fast!', '*Yip* Fox here!', '*Bark* Time to be clever!', '*Yip* Ready to outsmart them!'],
+      motivational: ['*Yip* We\'re too clever!', '*Bark* Stay quick!', '*Yip* We\'re fast!', '*Bark* Keep moving!', '*Yip* We\'re outsmarting them!', '*Bark* We\'re too smart!', '*Yip* We\'ve got this!', '*Bark* We\'re the cleverest!'] },
     { name: 'Owl', color: '#4a4a6a', accent: '#2a2a4a', type: 'owl', personality: 'precise', 
-      arrival: ['*Hoot* Wisdom and precision!', 'I see in the dark!', 'Owl ready!'], 
-      motivational: ['Stay wise!', 'We\'re watching!', 'Keep sharp!'] }
+      arrival: ['*Hoot* Wisdom and precision!', '*Hoot* I see in the dark!', '*Hoot* Owl ready!', '*Hoot* Knowledge is power!', '*Hoot* Wisdom guides us!'],
+      motivational: ['*Hoot* We are wise!', '*Hoot* Stay sharp!', '*Hoot* We\'re watching!', '*Hoot* Knowledge wins!', '*Hoot* We\'re the wisest!', '*Hoot* Wisdom never fails!', '*Hoot* We see everything!', '*Hoot* We know the way!'] }
   ];
 
   function spawnAlly() {
@@ -1401,8 +1448,11 @@
     } else if (roll < 0.99) {
       // 2% chance for spike drop
       type = 'spike';
+    } else if (roll < 0.995) {
+      // 0.5% chance for healing platform drop
+      type = 'healingPlatform';
     } else {
-      // 1% chance for weapon drop
+      // 0.5% chance for weapon drop
       const availableWeapons = arsenal.filter(w => !w.unlocked);
       if (availableWeapons.length > 0) {
         const weapon = availableWeapons[Math.floor(Math.random() * availableWeapons.length)];
@@ -1860,6 +1910,71 @@
         }
       }
 
+      // Healing platforms
+      for (let j = healingPlatforms.length - 1; j >= 0; j--) {
+        const h = healingPlatforms[j];
+        
+        // Update platform time and check if expired
+        h.time += dt;
+        if (h.time >= h.duration) {
+          particlesBurst(h.x, h.y, '#00ff88', 20, 300);
+          sounds.pickup();
+          healingPlatforms.splice(j, 1);
+          continue;
+        }
+        
+        // Heal companions in range
+        for (const a of allies) {
+          if (a.hp >= a.maxHp) continue; // Skip if already at full health
+          
+          const hdx = h.x - a.x, hdy = h.y - a.y;
+          const hdist = Math.hypot(hdx, hdy);
+          
+          if (hdist < h.r) {
+            // Heal companion
+            const healAmount = Math.min(h.healRate * dt, h.healPower, a.maxHp - a.hp);
+            a.hp += healAmount;
+            h.healPower -= healAmount;
+            
+            // Visual healing effect
+            if (Math.random() < 0.3) { // 30% chance per frame
+              particlesBurst(a.x, a.y, '#00ff88', 3, 80);
+            }
+            
+            // Attract companions to the platform
+            const attractionForce = 0.8;
+            const dx = h.x - a.x, dy = h.y - a.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist > 0) {
+              a.x += (dx / dist) * attractionForce;
+              a.y += (dy / dist) * attractionForce;
+            }
+            
+            // Healing speech bubble occasionally
+            if (Math.random() < 0.01) { // 1% chance per frame
+              const healingPhrases = ['*Purr* So healing!', '*Sigh* This feels good!', '*Relax* Much better!', '*Content* Ah, relief!'];
+              const phrase = healingPhrases[Math.floor(Math.random() * healingPhrases.length)];
+              state.speechBubbles.push({
+                x: a.x,
+                y: a.y - 40,
+                text: phrase,
+                time: 0,
+                life: 2.0,
+                owner: a,
+                color: '#00ff88'
+              });
+            }
+          }
+        }
+        
+        // Remove platform if out of healing power
+        if (h.healPower <= 0) {
+          particlesBurst(h.x, h.y, '#ff4444', 15, 200);
+          sounds.hit(0.2);
+          healingPlatforms.splice(j, 1);
+        }
+      }
+
       // Remove if far outside (failsafe)
       if (e.x < -200 || e.x > state.w + 200 || e.y < -200 || e.y > state.h + 200) {
         enemies.splice(i, 1);
@@ -2050,19 +2165,39 @@
             particlesBurst(player.x, player.y, '#27d07e', 6, 100);
             addMessage(`${a.name} healed you!`);
             
-            // Add motivational speech bubble
-            const motivationalMessage = a.animalType.motivational[Math.floor(Math.random() * a.animalType.motivational.length)];
+            // Add healing speech bubble with personality-specific messages
+            let healingMessage = '';
+            if (a.animalType.type === 'wolf') {
+              const wolfHealing = ['*Growl* You\'re healed, pack leader!', '*Howl* Feel the pack\'s strength!', '*Bark* Restored by the pack!'];
+              healingMessage = wolfHealing[Math.floor(Math.random() * wolfHealing.length)];
+            } else if (a.animalType.type === 'eagle') {
+              const eagleHealing = ['*Screech* Healed from above!', '*Cry* The sky restores you!', '*Screech* Soaring health!'];
+              healingMessage = eagleHealing[Math.floor(Math.random() * eagleHealing.length)];
+            } else if (a.animalType.type === 'bear') {
+              const bearHealing = ['*Roar* My strength heals you!', '*Growl* Bear medicine!', '*Roar* Unbreakable health!'];
+              healingMessage = bearHealing[Math.floor(Math.random() * bearHealing.length)];
+            } else if (a.animalType.type === 'fennec') {
+              const fennecHealing = ['*Yip* My ears sense your healing!', '*Bark* Big ears, big healing!', '*Yip* Cute and restorative!'];
+              healingMessage = fennecHealing[Math.floor(Math.random() * fennecHealing.length)];
+            } else if (a.animalType.type === 'fox') {
+              const foxHealing = ['*Yip* Clever healing!', '*Bark* Smart medicine!', '*Yip* Wits restore health!'];
+              healingMessage = foxHealing[Math.floor(Math.random() * foxHealing.length)];
+            } else if (a.animalType.type === 'owl') {
+              const owlHealing = ['*Hoot* Wisdom heals!', '*Hoot* Knowledge restores!', '*Hoot* Wise medicine!'];
+              healingMessage = owlHealing[Math.floor(Math.random() * owlHealing.length)];
+            }
+            
             state.speechBubbles.push({
               x: a.x,
               y: a.y - 40,
-              text: motivationalMessage,
+              text: healingMessage,
               time: 0,
               life: 2.5,
               owner: a
             });
           }
           
-          // Random motivational speech and comments
+          // Random motivational speech and personality comments
           if (Math.random() < 0.002) {
             const motivationalMessage = a.animalType.motivational[Math.floor(Math.random() * a.animalType.motivational.length)];
             state.speechBubbles.push({
@@ -2075,9 +2210,49 @@
             });
           }
           
+          // Personality-specific random comments
+          if (Math.random() < 0.001) {
+            let personalityComment = '';
+            if (a.animalType.type === 'wolf') {
+              const wolfComments = ['*Sniff* I smell victory!', '*Growl* The pack grows stronger!', '*Howl* We hunt as one!'];
+              personalityComment = wolfComments[Math.floor(Math.random() * wolfComments.length)];
+            } else if (a.animalType.type === 'eagle') {
+              const eagleComments = ['*Screech* I see them all!', '*Cry* The sky is clear!', '*Screech* My vision is perfect!'];
+              personalityComment = eagleComments[Math.floor(Math.random() * eagleComments.length)];
+            } else if (a.animalType.type === 'bear') {
+              const bearComments = ['*Growl* I am unbreakable!', '*Roar* My strength is unmatched!', '*Growl* Nothing can stop me!'];
+              personalityComment = bearComments[Math.floor(Math.random() * bearComments.length)];
+            } else if (a.animalType.type === 'fennec') {
+              const fennecComments = ['*Yip* My ears are tingling!', '*Bark* I hear everything!', '*Yip* My big ears never lie!'];
+              personalityComment = fennecComments[Math.floor(Math.random() * fennecComments.length)];
+            } else if (a.animalType.type === 'fox') {
+              const foxComments = ['*Yip* I\'m too clever for them!', '*Bark* They can\'t catch me!', '*Yip* My wits are sharp!'];
+              personalityComment = foxComments[Math.floor(Math.random() * foxComments.length)];
+            } else if (a.animalType.type === 'owl') {
+              const owlComments = ['*Hoot* My wisdom guides us!', '*Hoot* I see through deception!', '*Hoot* Knowledge is my weapon!'];
+              personalityComment = owlComments[Math.floor(Math.random() * owlComments.length)];
+            }
+            
+            if (personalityComment) {
+              state.speechBubbles.push({
+                x: a.x,
+                y: a.y - 40,
+                text: personalityComment,
+                time: 0,
+                life: 2.5,
+                owner: a
+              });
+            }
+          }
+          
           // Combat comments
           if (Math.random() < 0.001) {
-            const combatPhrases = ['Take that!', 'Gotcha!', 'Nice shot!', 'Keep it up!', 'We\'re winning!'];
+            const combatPhrases = [
+              'Take that!', 'Gotcha!', 'Nice shot!', 'Keep it up!', 'We\'re winning!',
+              'Boom!', 'Perfect!', 'Excellent!', 'Amazing!', 'Fantastic!',
+              'That\'s the way!', 'Keep going!', 'We\'ve got this!', 'Unstoppable!', 'Incredible!',
+              'Outstanding!', 'Brilliant!', 'Superb!', 'Magnificent!', 'Spectacular!'
+            ];
             const phrase = combatPhrases[Math.floor(Math.random() * combatPhrases.length)];
             state.speechBubbles.push({
               x: a.x,
@@ -2325,6 +2500,8 @@
             player.barricades++;
           } else if (p.type === 'spike') {
             player.spikes++;
+          } else if (p.type === 'healingPlatform') {
+            player.healingPlatforms++;
           }
           cameraFlash(0.05);
           particlesBurst(p.x, p.y, p.type === 'med' ? '#27d07e' : p.type === 'stam' ? '#3a86ff' : p.type === 'weapon' ? '#ff6b6b' : p.type === 'turret' ? '#4a90e2' : p.type === 'barricade' ? '#8b4513' : p.type === 'spike' ? '#ff4444' : '#ffbf00', 8, 120);
@@ -2670,6 +2847,9 @@
 
     // Turrets
     for (const t of turrets) drawTurret(t);
+
+    // Healing platforms
+    for (const h of healingPlatforms) drawHealingPlatform(h);
 
     // Allies
     for (const a of allies) drawAlly(a);
@@ -3516,7 +3696,7 @@
     ctx.save();
     ctx.translate(p.x,p.y);
     ctx.rotate(p.spin);
-    ctx.fillStyle = p.type==='med' ? '#27d07e' : p.type==='stam' ? '#3a86ff' : p.type==='weapon' ? '#ff6b6b' : p.type==='turret' ? '#4a90e2' : p.type==='barricade' ? '#8b4513' : p.type==='spike' ? '#ff4444' : '#ffbf00';
+    ctx.fillStyle = p.type==='med' ? '#27d07e' : p.type==='stam' ? '#3a86ff' : p.type==='weapon' ? '#ff6b6b' : p.type==='turret' ? '#4a90e2' : p.type==='barricade' ? '#8b4513' : p.type==='spike' ? '#ff4444' : p.type==='healingPlatform' ? '#00ff88' : '#ffbf00';
     roundRect(-10,-10,20,20,6); ctx.fill();
     ctx.fillStyle = 'rgba(0,0,0,0.4)';
     if (p.type==='med') { ctx.fillRect(-2,-6,4,12); ctx.fillRect(-6,-2,12,4); }
@@ -3525,6 +3705,13 @@
     else if (p.type==='turret') { ctx.fillRect(-6,-2,12,4); ctx.fillRect(-2,-6,4,12); }
     else if (p.type==='barricade') { ctx.fillRect(-8,-2,16,4); }
     else if (p.type==='spike') { ctx.fillRect(-4,-6,8,12); ctx.fillRect(-6,-4,12,8); }
+    else if (p.type==='healingPlatform') { 
+      // Healing platform symbol - cross with circle
+      ctx.fillRect(-2,-6,4,12); ctx.fillRect(-6,-2,12,4);
+      ctx.beginPath();
+      ctx.arc(0,0,8,0,TAU);
+      ctx.stroke();
+    }
     else { ctx.fillRect(-2,-6,4,12); }
     ctx.restore();
   }
@@ -3821,6 +4008,59 @@
       const angle = (i / 4) * TAU;
       ctx.fillRect(Math.cos(angle) * m.r * 0.4 - 2, Math.sin(angle) * m.r * 0.4 - 1, 4, 2);
     }
+
+    ctx.restore();
+  }
+
+  function drawHealingPlatform(h) {
+    // Shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.beginPath();
+    ctx.ellipse(h.x, h.y+8, h.r*0.9, h.r*0.6, 0, 0, TAU);
+    ctx.fill();
+
+    ctx.save();
+    ctx.translate(h.x, h.y);
+
+    // Healing aura effect
+    const auraAlpha = 0.3 + Math.sin(state.time * 3) * 0.1;
+    ctx.fillStyle = `rgba(0,255,136,${auraAlpha})`;
+    ctx.beginPath();
+    ctx.arc(0, 0, h.r, 0, TAU);
+    ctx.fill();
+
+    // Platform base
+    ctx.fillStyle = '#00ff88';
+    ctx.beginPath();
+    ctx.arc(0, 0, h.r * 0.8, 0, TAU);
+    ctx.fill();
+
+    // Platform details
+    ctx.fillStyle = '#00cc66';
+    ctx.beginPath();
+    ctx.arc(0, 0, h.r * 0.6, 0, TAU);
+    ctx.fill();
+
+    // Healing cross symbol
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(-h.r * 0.15, -h.r * 0.4, h.r * 0.3, h.r * 0.8);
+    ctx.fillRect(-h.r * 0.4, -h.r * 0.15, h.r * 0.8, h.r * 0.3);
+
+    // Pulsing effect
+    const pulse = Math.sin(state.time * 4) * 0.2 + 0.8;
+    ctx.strokeStyle = `rgba(255,255,255,${pulse})`;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(0, 0, h.r * 0.9, 0, TAU);
+    ctx.stroke();
+
+    // Health bar showing remaining healing power
+    const healthPercent = h.healPower / 100;
+    const barWidth = h.r * 1.6;
+    ctx.fillStyle = '#0b1118';
+    ctx.fillRect(-barWidth/2, -h.r - 15, barWidth, 4);
+    ctx.fillStyle = '#00ff88';
+    ctx.fillRect(-barWidth/2, -h.r - 15, barWidth * healthPercent, 4);
 
     ctx.restore();
   }
