@@ -5,6 +5,8 @@ A thrilling top-down survival shooter where you defend the perimeter against wav
 ![RED ZONE Gameplay](https://img.shields.io/badge/Status-Playable-brightgreen)
 ![Version](https://img.shields.io/badge/Version-Arsenal%20Update-blue)
 ![Platform](https://img.shields.io/badge/Platform-Web%20Browser-lightgrey)
+![Made with Cursor](https://img.shields.io/badge/Made%20with-Cursor%20AI-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
 
 ## 🎯 Game Overview
 
@@ -34,11 +36,11 @@ RED ZONE is an intense survival shooter where you must hold your ground against 
 - **Mines** - Explosive traps for area denial
 
 ### 🤖 **AI Allies**
-- **Scout** - Fast, aggressive soldiers
-- **Heavy** - Steady, high-damage units
-- **Sniper** - Precise long-range support
-- **Medic** - Healing and motivational support
-- **Veteran** - Experienced combat units
+- **Wolf** - Fast, aggressive soldiers
+- **Bear** - Steady, high-damage units
+- **Owl** - Precise long-range support
+- **Fennec** - Quick, evasive fighters
+- **Dolphin** - Healing and revival support
 
 ### 🎮 **Gameplay Mechanics**
 - **Wave System** - Progressive difficulty with boss battles
@@ -47,6 +49,16 @@ RED ZONE is an intense survival shooter where you must hold your ground against 
 - **Special Abilities** - Random powerful effects
 - **Auto-Reload** - Automatic weapon reloading
 - **Damage Numbers** - Visual feedback for hits
+- **Healing Platforms** - Restore ally health
+- **Graveyard System** - Fallen allies leave graves
+- **Revival Mechanics** - Dolphin can revive fallen allies
+
+### 🎨 **Visual & Audio Features**
+- **Procedural 8-bit Music** - Dynamic background music
+- **Particle Effects** - Enhanced visual feedback
+- **Dynamic Weather** - Rain, lightning, and fog effects
+- **Procedural Background** - Industrial cityscape
+- **Screen Effects** - Blood splatter, camera flash, screen shake
 
 ## 🎮 Controls
 
@@ -66,6 +78,7 @@ RED ZONE is an intense survival shooter where you must hold your ground against 
 - **B** - Place barricade
 - **V** - Place vines
 - **M** - Place mine
+- **H** - Place healing platform
 
 ### **Special Actions**
 - **Q** - Activate special ability
@@ -75,7 +88,7 @@ RED ZONE is an intense survival shooter where you must hold your ground against 
 
 ## 🚀 How to Play
 
-1. **Start the Game** - Click "Start" to begin
+1. **Start the Game** - Click "Enter the Red Zone" to begin
 2. **Prepare** - Use the first 20 seconds to place defensive structures
 3. **Survive** - Defend against waves of enemies from all directions
 4. **Collect** - Pick up weapon drops and power-ups
@@ -122,6 +135,7 @@ RED ZONE is an intense survival shooter where you must hold your ground against 
 - **Procedural Sound Effects** - Dynamic weapon sounds
 - **Impact Audio** - Realistic hit and explosion sounds
 - **Atmospheric Audio** - Immersive game environment
+- **8-bit Music Generation** - Dynamic background music
 
 ## 🛠️ Technical Details
 
@@ -132,18 +146,79 @@ RED ZONE is an intense survival shooter where you must hold your ground against 
 
 ## 🚀 Installation
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/favstats/redzone.git
-   cd redzone
-   ```
+### Browser Version
+1. Download the `index.html` file
+2. Open it in any modern web browser
+3. Click "Enter the Red Zone" to start playing
 
-2. **Open in your browser:**
-   - Simply open `index.html` in any modern web browser
-   - No server required - runs entirely in the browser
+### Desktop Version
+Download the latest release for your platform:
+- **Windows**: `redzone-windows.exe`
+- **macOS**: `redzone-macos.app`
+- **Linux**: `redzone-linux`
 
-3. **Start playing:**
-   - Click "Start" to begin your survival mission
+## 🛠️ Development
+
+### Prerequisites
+- Modern web browser (Chrome, Firefox, Safari, Edge)
+- No additional dependencies required
+
+### Local Development
+1. Clone the repository:
+```bash
+git clone https://github.com/fabiovotta/redzone.git
+cd redzone
+```
+
+2. Open `index.html` in your browser or use a local server:
+```bash
+# Using Python
+python -m http.server 8000
+
+# Using Node.js
+npx serve .
+
+# Using PHP
+php -S localhost:8000
+```
+
+3. Navigate to `http://localhost:8000` in your browser
+
+## 📦 Building Desktop Version
+
+### Using Electron
+1. Install Node.js and npm
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Build the desktop app:
+```bash
+npm run build
+```
+
+4. Or use the automated script:
+```bash
+node build.js
+```
+
+## 🎨 Game Architecture
+
+### Core Systems
+- **Game Loop**: 60 FPS update and render cycle
+- **Entity System**: Player, enemies, allies, projectiles, and structures
+- **AI System**: Pathfinding, behavior trees, and personality-based actions
+- **Audio System**: Procedural music generation and sound effects
+- **Particle System**: Visual effects and feedback
+- **UI System**: HUD, menus, and screen management
+
+### Technical Features
+- **Canvas 2D Rendering**: Smooth graphics and animations
+- **Web Audio API**: Dynamic music and sound generation
+- **Local Storage**: Settings and progress persistence
+- **Responsive Design**: Works on various screen sizes
+- **Performance Optimized**: Efficient rendering and update loops
 
 ## 🌐 Browser Compatibility
 
@@ -166,29 +241,59 @@ The game includes various settings and features:
 - **Damage Numbers** - Visual damage feedback
 - **Turret Types** - Multiple defensive options
 - **Weapon Drops** - Progressive weapon unlocking
+- **Settings Menu** - Customize audio, graphics, and gameplay
+- **Skill Tree** - Upgrade health, speed, damage, reload, and stamina
 
 ## 🤝 Contributing
 
-Feel free to contribute to RED ZONE! Some ideas:
-- New weapon types
-- Additional enemy types
-- More defensive structures
-- Visual improvements
-- Audio enhancements
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## 📝 License
+### Development Guidelines
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-This project is open source. Feel free to use, modify, and distribute.
+## 📄 License
 
-## 🎯 Future Updates
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Planned features for future versions:
-- More weapon types
-- Additional enemy varieties
-- Enhanced AI behaviors
-- Multiplayer support
-- Mobile optimization
-- Soundtrack integration
+## 👨‍💻 Author
+
+**Fabio Votta**
+- **GitHub**: [@fabiovotta](https://github.com/fabiovotta)
+- **Game**: Developed with Cursor AI
+
+## 🙏 Acknowledgments
+
+- **Cursor AI**: For helping bring this game to life
+- **Web Audio API**: For the procedural music system
+- **Canvas API**: For the smooth graphics and animations
+- **All players**: Who will defend the Red Zone!
+
+## 📈 Roadmap
+
+### Future Features
+- [ ] Multiplayer support
+- [ ] More enemy types
+- [ ] Additional weapons and abilities
+- [ ] Campaign mode
+- [ ] Mobile support
+- [ ] Steam release
+
+### Known Issues
+- Performance may vary on older devices
+- Audio settings require page refresh to apply
+- Some browsers may have minor rendering differences
+
+## 📊 Game Statistics
+
+- **Lines of Code**: ~8,000+
+- **File Size**: ~400KB
+- **Supported Browsers**: Chrome, Firefox, Safari, Edge
+- **Development Time**: Created with Cursor AI
+- **License**: MIT
 
 ---
 
