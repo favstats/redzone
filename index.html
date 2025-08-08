@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>RED ZONE: Arsenal Update</title>
+  <title>RED ZONE - Space Penguin Defense</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐧</text></svg>">
   <style>
     :root {
       color-scheme: dark;
@@ -312,7 +313,7 @@
     <div id="screenPause" class="screen hide">
       <div class="panel">
         <h1>Paused</h1>
-        <p>Catch your breath. They won’t.</p>
+        <p>Catch your breath. They won't.</p>
         <div class="row" style="margin-top:14px">
           <button id="resumeBtn" class="btn primary">Resume</button>
           <button id="retryBtn" class="btn">Restart</button>
@@ -1295,6 +1296,9 @@
     { name: 'Bear', color: '#8b4513', accent: '#6b3513', type: 'bear', personality: 'steady', 
       arrival: ['*Roar* Heavy support here!', 'Time to get serious!', 'Bear ready!'], 
       motivational: ['Stay focused!', 'We\'re unstoppable!', 'Keep fighting!'] },
+    { name: 'Fennec', color: '#f4a460', accent: '#d49450', type: 'fennec', personality: 'alert', 
+      arrival: ['*Yip* Big ears, big heart!', 'I can hear everything!', 'Fennec ready!'], 
+      motivational: ['My ears hear victory!', 'We\'re too cute to lose!', 'Big ears, big success!'] },
     { name: 'Fox', color: '#ff6b35', accent: '#d4552a', type: 'fox', personality: 'aggressive', 
       arrival: ['*Yip* Quick and ready!', 'Let\'s move fast!', 'Fox here!'], 
       motivational: ['Stay quick!', 'We\'re fast!', 'Keep moving!'] },
@@ -1364,7 +1368,7 @@
       allies.push(ally);
       
       // Add speech bubble for arrival
-      const arrivalMessage = soldierType.arrival[Math.floor(Math.random() * soldierType.arrival.length)];
+      const arrivalMessage = animalType.arrival[Math.floor(Math.random() * animalType.arrival.length)];
       state.speechBubbles.push({
         x: ally.x,
         y: ally.y - 40,
@@ -1375,7 +1379,7 @@
       });
       
       // Announce arrival
-      addMessage(`${soldierName} the ${soldierType.name} arrived!`);
+      addMessage(`${animalName} the ${animalType.name} arrived!`);
     }
   }
 
@@ -1692,6 +1696,49 @@
         }
       }
 
+      // Attack animal companions
+      for (const a of allies) {
+        if (a.hp <= 0) continue;
+        const adx = a.x - e.x, ady = a.y - e.y;
+        const adist = Math.hypot(adx, ady);
+        if (adist < e.r + a.r + 2 && e.cd <= 0) {
+          e.cd = 0.6;
+          a.hp -= Math.round(e.dmg * 0.7);
+          
+          // Distress call when attacked (but not spam)
+          if (!a.lastDistressCall || state.time - a.lastDistressCall > 3.0) {
+            a.lastDistressCall = state.time;
+            const distressPhrases = [
+              `*${a.animalType.type === 'wolf' ? 'Howl' : a.animalType.type === 'eagle' ? 'Screech' : a.animalType.type === 'bear' ? 'Roar' : a.animalType.type === 'fox' ? 'Yip' : a.animalType.type === 'fennec' ? 'Yip' : 'Hoot'}* Help!`,
+              `*${a.animalType.type === 'wolf' ? 'Growl' : a.animalType.type === 'eagle' ? 'Cry' : a.animalType.type === 'bear' ? 'Roar' : a.animalType.type === 'fox' ? 'Yelp' : a.animalType.type === 'fennec' ? 'Yelp' : 'Hoot'}* Under attack!`,
+              `*${a.animalType.type === 'wolf' ? 'Whine' : a.animalType.type === 'eagle' ? 'Cry' : a.animalType.type === 'bear' ? 'Roar' : a.animalType.type === 'fox' ? 'Yip' : a.animalType.type === 'fennec' ? 'Yip' : 'Hoot'}* Need backup!`
+            ];
+            const phrase = distressPhrases[Math.floor(Math.random() * distressPhrases.length)];
+            state.speechBubbles.push({
+              x: a.x,
+              y: a.y - 40,
+              text: phrase,
+              time: 0,
+              life: 2.5,
+              owner: a,
+              color: '#ff4444'
+            });
+            addMessage(`${a.name} is under attack!`);
+            
+            // Visual feedback for companion being attacked
+            particlesBurst(a.x, a.y, '#ff4444', 8, 120);
+            cameraFlash(0.1);
+            screenShake(0.1, 0.1);
+          }
+          
+          if (a.hp <= 0) {
+            particlesBurst(a.x, a.y, '#ff4949', 20, 200);
+            addMessage(`${a.name} was lost...`);
+            allies.splice(allies.indexOf(a), 1);
+          }
+        }
+      }
+
       // Check barricade collision and attack
       for (let j = barricades.length - 1; j >= 0; j--) {
         const b = barricades[j];
@@ -2004,7 +2051,7 @@
             addMessage(`${a.name} healed you!`);
             
             // Add motivational speech bubble
-            const motivationalMessage = a.soldierType.motivational[Math.floor(Math.random() * a.soldierType.motivational.length)];
+            const motivationalMessage = a.animalType.motivational[Math.floor(Math.random() * a.animalType.motivational.length)];
             state.speechBubbles.push({
               x: a.x,
               y: a.y - 40,
@@ -2017,7 +2064,7 @@
           
           // Random motivational speech and comments
           if (Math.random() < 0.002) {
-            const motivationalMessage = a.soldierType.motivational[Math.floor(Math.random() * a.soldierType.motivational.length)];
+            const motivationalMessage = a.animalType.motivational[Math.floor(Math.random() * a.animalType.motivational.length)];
             state.speechBubbles.push({
               x: a.x,
               y: a.y - 40,
@@ -2060,12 +2107,12 @@
           const ang = a.angle;
           let bulletSpeed = 600;
           let bulletDamage = a.damage;
-          let bulletColor = a.soldierType.color;
+          let bulletColor = a.animalType.color;
           
-          if (a.soldierType.name === 'Sniper') {
+          if (a.animalType.type === 'eagle') {
             bulletSpeed = 1000;
             bulletDamage = 25;
-          } else if (a.soldierType.name === 'Heavy') {
+          } else if (a.animalType.type === 'bear') {
             bulletSpeed = 500;
             bulletDamage = 20;
           }
@@ -3320,6 +3367,53 @@
       ctx.fillStyle = '#ff4444';
       ctx.fillRect(-a.r*1.2, -a.r*0.2, 8, 4);
       
+    } else if (at.type === 'fennec') {
+      // Fennec features - BIG EARS!
+      ctx.fillStyle = '#f4a460';
+      ctx.fillRect(-a.r*0.8, -a.r*0.6, a.r*1.6, a.r*1.2); // Body
+      
+      // Fennec head
+      ctx.fillStyle = '#d49450';
+      ctx.beginPath();
+      ctx.arc(a.r*0.4, -a.r*0.3, a.r*0.4, 0, TAU);
+      ctx.fill();
+      
+      // FENNEC BIG EARS - the main feature!
+      ctx.fillStyle = '#f4a460';
+      ctx.fillRect(a.r*0.1, -a.r*1.2, 6, 12); // Left big ear
+      ctx.fillRect(a.r*0.7, -a.r*1.2, 6, 12); // Right big ear
+      
+      // Ear highlights
+      ctx.fillStyle = '#e6b380';
+      ctx.fillRect(a.r*0.15, -a.r*1.1, 4, 10); // Left ear highlight
+      ctx.fillRect(a.r*0.75, -a.r*1.1, 4, 10); // Right ear highlight
+      
+      // Fennec eyes
+      ctx.fillStyle = '#000000';
+      ctx.beginPath();
+      ctx.arc(a.r*0.2, -a.r*0.3, 2.5, 0, TAU);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(a.r*0.6, -a.r*0.3, 2.5, 0, TAU);
+      ctx.fill();
+      
+      // Eye highlights
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(a.r*0.15, -a.r*0.35, 0.8, 0, TAU);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(a.r*0.55, -a.r*0.35, 0.8, 0, TAU);
+      ctx.fill();
+      
+      // Fennec snout
+      ctx.fillStyle = '#1a1a1a';
+      ctx.fillRect(a.r*0.3, -a.r*0.1, 6, 3);
+      
+      // Fennec tail
+      ctx.fillStyle = '#d49450';
+      ctx.fillRect(-a.r*1.2, -a.r*0.2, 8, 4);
+      
     } else if (at.type === 'owl') {
       // Owl features
       ctx.fillStyle = '#4a4a6a';
@@ -3355,6 +3449,8 @@
       ctx.fillRect(a.r*0.8, -5, 16, 10); // Massive paws
     } else if (at.type === 'fox') {
       ctx.fillRect(a.r*0.8, -2, 10, 4); // Quick strikes
+    } else if (at.type === 'fennec') {
+      ctx.fillRect(a.r*0.8, -2, 10, 4); // Quick strikes with big ears
     } else if (at.type === 'owl') {
       ctx.fillRect(a.r*0.8, -3, 12, 6); // Sharp talons
     }
@@ -3371,13 +3467,31 @@
     const hpw = a.r*2;
     ctx.fillStyle = '#0b1118';
     ctx.fillRect(-a.r, -a.r-10, hpw, 4);
-    ctx.fillStyle = '#27d07e';
-    ctx.fillRect(-a.r, -a.r-10, hpw * (a.hp/a.maxHp), 4);
+    
+    // Health bar color based on health percentage
+    const healthPercent = a.hp / a.maxHp;
+    let healthColor = '#27d07e'; // Green
+    if (healthPercent <= 0.25) {
+      healthColor = '#ff4444'; // Red when critical
+    } else if (healthPercent <= 0.5) {
+      healthColor = '#ffaa00'; // Orange when low
+    }
+    
+    ctx.fillStyle = healthColor;
+    ctx.fillRect(-a.r, -a.r-10, hpw * healthPercent, 4);
     
     // Animal health bar border
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 1;
     ctx.strokeRect(-a.r, -a.r-10, hpw, 4);
+    
+    // Critical health warning effect
+    if (healthPercent <= 0.25) {
+      const pulse = Math.sin(state.time * 8) * 0.3 + 0.7;
+      ctx.strokeStyle = `rgba(255,68,68,${pulse})`;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(-a.r, -a.r-10, hpw, 4);
+    }
 
     ctx.restore();
   }
@@ -3720,40 +3834,32 @@
     ctx.translate(player.x, player.y);
     ctx.rotate(player.angle);
 
-    // SUPER BADASS SPACE PENGUIN BODY
+    // CUTE PENGUIN BODY - Classic black and white
     const bodyGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 16);
-    bodyGrad.addColorStop(0, '#1a1a2a');
-    bodyGrad.addColorStop(1, '#0a0a1a');
+    bodyGrad.addColorStop(0, '#1a1a1a');
+    bodyGrad.addColorStop(0.7, '#2a2a2a');
+    bodyGrad.addColorStop(1, '#0a0a0a');
     ctx.fillStyle = bodyGrad;
     roundRect(-14,-10,28,20,8);
     ctx.fill();
     
-    // Space armor plating
-    ctx.fillStyle = '#2a2a4a';
-    ctx.fillRect(-12, -8, 24, 16);
-    ctx.fillStyle = '#3a3a6a';
-    ctx.fillRect(-10, -6, 20, 12);
+    // White belly patch
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.ellipse(0, 2, 8, 6, 0, 0, TAU);
+    ctx.fill();
     
-    // BADASS HELMET with space tech
-    const helmetGrad = ctx.createRadialGradient(0, -8, 0, 0, -8, 12);
-    helmetGrad.addColorStop(0, '#1a1a3a');
-    helmetGrad.addColorStop(1, '#0a0a2a');
-    ctx.fillStyle = helmetGrad;
+    // PENGUIN HEAD with cute features
+    const headGrad = ctx.createRadialGradient(0, -8, 0, 0, -8, 12);
+    headGrad.addColorStop(0, '#1a1a1a');
+    headGrad.addColorStop(1, '#0a0a0a');
+    ctx.fillStyle = headGrad;
     ctx.beginPath();
     ctx.arc(0, -8, 12, 0, TAU);
     ctx.fill();
     
-    // Advanced visor with HUD
+    // Cute black eyes with white highlights
     ctx.fillStyle = '#000000';
-    ctx.fillRect(-4, -10, 8, 5);
-    ctx.fillStyle = '#00ff88';
-    ctx.fillRect(-3, -9, 6, 3);
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(-2, -8, 2, 1);
-    ctx.fillRect(0, -8, 2, 1);
-    
-    // BADASS EYES with targeting system
-    ctx.fillStyle = '#00ff88';
     ctx.beginPath();
     ctx.arc(-4, -9, 2.5, 0, TAU);
     ctx.fill();
@@ -3761,47 +3867,74 @@
     ctx.arc(4, -9, 2.5, 0, TAU);
     ctx.fill();
     
-    // Targeting pupils
+    // White eye highlights
     ctx.fillStyle = '#ffffff';
     ctx.beginPath();
-    ctx.arc(-4, -9, 1.5, 0, TAU);
+    ctx.arc(-4.5, -9.5, 0.8, 0, TAU);
     ctx.fill();
     ctx.beginPath();
-    ctx.arc(4, -9, 1.5, 0, TAU);
+    ctx.arc(3.5, -9.5, 0.8, 0, TAU);
     ctx.fill();
     
-    // Eye highlights
-    ctx.fillStyle = '#00ff88';
+    // Cute orange beak
+    ctx.fillStyle = '#ff8c42';
     ctx.beginPath();
-    ctx.arc(-4.5, -9.5, 0.5, 0, TAU);
+    ctx.moveTo(-2, -6);
+    ctx.lineTo(2, -6);
+    ctx.lineTo(0, -4);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Beak highlight
+    ctx.fillStyle = '#ffa562';
+    ctx.beginPath();
+    ctx.moveTo(-1, -6);
+    ctx.lineTo(1, -6);
+    ctx.lineTo(0, -5);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Cute flippers (wings)
+    ctx.fillStyle = '#1a1a1a';
+    ctx.beginPath();
+    ctx.ellipse(-12, 0, 3, 8, 0, 0, TAU);
     ctx.fill();
     ctx.beginPath();
-    ctx.arc(3.5, -9.5, 0.5, 0, TAU);
+    ctx.ellipse(12, 0, 3, 8, 0, 0, TAU);
+    ctx.fill();
+    
+    // Flipper highlights
+    ctx.fillStyle = '#2a2a2a';
+    ctx.beginPath();
+    ctx.ellipse(-12, -1, 2, 6, 0, 0, TAU);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(12, -1, 2, 6, 0, 0, TAU);
     ctx.fill();
 
-    // BADASS SPACE WEAPON
-    ctx.fillStyle = '#2a2a2a';
+    // SPACE PENGUIN WEAPON - Cute but deadly
+    ctx.fillStyle = '#4a4a4a';
     ctx.fillRect(8,-3,20,6);
-    ctx.fillStyle = '#4a4a6a';
+    ctx.fillStyle = '#6a6a6a';
     ctx.fillRect(10,-2,16,4);
-    ctx.fillStyle = '#00ff88';
+    ctx.fillStyle = '#ff8c42';
     ctx.fillRect(12,-1,2,2);
     
-    // Space tech details
+    // Weapon details
     ctx.fillStyle = '#ff4444';
     ctx.beginPath();
     ctx.arc(12,0,3,0,TAU);
     ctx.fill();
     
-    // Advanced backpack with thrusters
-    ctx.fillStyle = '#1a1a3a';
+    // Cute space backpack
+    ctx.fillStyle = '#2a2a2a';
     ctx.fillRect(-16, -5, 8, 10);
-    ctx.fillStyle = '#ff4444';
+    ctx.fillStyle = '#ff8c42';
     ctx.fillRect(-18, -3, 2, 6);
     ctx.fillRect(-18, 3, 2, 6);
     
-    // Space antenna with targeting
-    ctx.fillStyle = '#00ff88';
+    // Cute antenna
+    ctx.fillStyle = '#ff8c42';
     ctx.fillRect(-2, -18, 4, 8);
     ctx.beginPath();
     ctx.arc(-2, -18, 2, 0, TAU);
@@ -3809,7 +3942,7 @@
     
     // Energy shield effect
     if (player.inv > 0) {
-      ctx.strokeStyle = '#00ff88';
+      ctx.strokeStyle = '#ff8c42';
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.arc(0, 0, 18, 0, TAU);
@@ -3935,7 +4068,7 @@
       ctx.strokeRect(bubble.x - bubbleWidth/2, bubble.y - bubbleHeight/2, bubbleWidth, bubbleHeight);
       
       // Text
-      ctx.fillStyle = `rgba(0,0,0,${alpha})`;
+      ctx.fillStyle = bubble.color ? `rgba(${bubble.color === '#ff4444' ? '255,68,68' : '0,0,0'},${alpha})` : `rgba(0,0,0,${alpha})`;
       ctx.font = 'bold 12px Arial';
       ctx.textAlign = 'center';
       ctx.fillText(bubble.text, bubble.x, bubble.y + 4);
@@ -4038,5 +4171,6 @@
   </script>
 </body>
 </html>
+
 
 
