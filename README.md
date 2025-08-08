@@ -45,6 +45,10 @@ After the AI uprising of 2042, humanity's last strongholds are scattered across 
 ### 🤖 **AI-Bonded Animal Companions**
 Each companion has unique personalities, abilities, and speech patterns:
 
+- **Dog** - Loyal protector that follows and defends the player
+  - *"*Woof* Master, I'm here!"*
+  - *"*Bark* I'll protect you!"*
+  - **Protection Ability**: Follows player closely and attacks enemies near them
 - **Wolf** - Fast, aggressive hunter with pack mentality
   - *"*Howl* Ready to hunt!"*
   - *"*Growl* We're the pack!"*

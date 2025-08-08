@@ -2733,6 +2733,9 @@
   ];
 
   const animalCompanions = [
+    { name: 'Dog', color: '#8b7355', accent: '#6b5a4a', type: 'dog', personality: 'loyal', 
+      arrival: ['*Woof* Master, I\'m here!', '*Bark* Ready to protect!', '*Woof* Your faithful companion!', '*Bark* I\'ll guard you!', '*Woof* Loyal to the end!'],
+      motivational: ['*Woof* I\'ll protect you!', '*Bark* Stay safe, master!', '*Woof* I\'m watching your back!', '*Bark* Nothing will harm you!', '*Woof* I\'m your shield!', '*Bark* I\'ll defend you!', '*Woof* You\'re safe with me!', '*Bark* I\'ll never leave you!'] },
     { name: 'Wolf', color: '#6a5a4a', accent: '#4a3a2a', type: 'wolf', personality: 'aggressive', 
       arrival: ['*Howl* Ready to hunt!', '*Growl* Let\'s track them down!', '*Bark* Wolf reporting!', '*Howl* The pack is here!', '*Growl* Time to hunt!'],
       motivational: ['*Growl* We\'re the pack!', '*Howl* Keep fighting!', '*Bark* Stay strong!', '*Growl* We\'re unstoppable!', '*Howl* The hunt continues!', '*Bark* We\'re winning!', '*Growl* Nothing stops the pack!', '*Howl* Victory is ours!'] },
@@ -3374,6 +3377,15 @@
                 ];
                 reactionMessage = owlReactions[Math.floor(Math.random() * owlReactions.length)];
                 reactionColor = '#ffaa88';
+              } else if (survivor.animalType.type === 'dog') {
+                const dogReactions = [
+                  `*Woof* ${a.name}, my loyal friend!`,
+                  `*Bark* I'll protect them for you!`,
+                  `*Woof* Your loyalty inspires us!`,
+                  `*Bark* I'll guard them in your memory!`
+                ];
+                reactionMessage = dogReactions[Math.floor(Math.random() * dogReactions.length)];
+                reactionColor = '#8b7355';
               } else if (survivor.animalType.type === 'dolphin') {
                 const dolphinReactions = [
                   `*Click* ${a.name}, I couldn't save you!`,
@@ -3839,6 +3851,9 @@
             } else if (a.animalType.type === 'owl') {
               const owlComments = ['*Hoot* My wisdom guides us!', '*Hoot* I see through deception!', '*Hoot* Knowledge is my weapon!'];
               personalityComment = owlComments[Math.floor(Math.random() * owlComments.length)];
+            } else if (a.animalType.type === 'dog') {
+              const dogComments = ['*Woof* I\'ll protect you, master!', '*Bark* I\'m watching your back!', '*Woof* You\'re safe with me!', '*Bark* I\'ll defend you!'];
+              personalityComment = dogComments[Math.floor(Math.random() * dogComments.length)];
             } else if (a.animalType.type === 'dolphin') {
               const dolphinComments = ['*Click* I sense injuries nearby!', '*Whistle* My healing instincts are strong!', '*Click* I\'m here to help!'];
               personalityComment = dolphinComments[Math.floor(Math.random() * dolphinComments.length)];
@@ -3880,8 +3895,77 @@
         let targetX = closest.x, targetY = closest.y;
         let isHealing = false;
         
+        // DOG LOYAL PROTECTOR LOGIC - Follows and protects the player
+        if (a.animalType.type === 'dog') {
+          // Dog follows player at a close distance and protects them
+          const followDistance = 40; // Close following distance
+          const protectDistance = 80; // Protection range
+          
+          // Find closest enemy to player
+          let closestEnemyToPlayer = null;
+          let closestEnemyDist = protectDistance;
+          
+          for (const e of enemies) {
+            const dx = e.x - player.x, dy = e.y - player.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist < closestEnemyDist) {
+              closestEnemyToPlayer = e;
+              closestEnemyDist = dist;
+            }
+          }
+          
+          // Dog behavior: follow player closely, attack enemies near player
+          if (closestEnemyToPlayer && closestEnemyDist < protectDistance) {
+            // Protect player by attacking nearby enemies
+            targetX = closestEnemyToPlayer.x;
+            targetY = closestEnemyToPlayer.y;
+            
+            // Dog combat comments
+            if (Math.random() < 0.002) {
+              const protectPhrases = ['*Growl* Get away from my master!', '*Bark* I\'ll protect you!', '*Woof* Back off!', '*Growl* You won\'t touch him!'];
+              const phrase = protectPhrases[Math.floor(Math.random() * protectPhrases.length)];
+              state.speechBubbles.push({
+                x: a.x,
+                y: a.y - 40,
+                text: phrase,
+                time: 0,
+                life: 2.5,
+                owner: a
+              });
+            }
+          } else {
+            // Follow player at close distance
+            const dx = player.x - a.x, dy = player.y - a.y;
+            const distToPlayer = Math.hypot(dx, dy);
+            
+            if (distToPlayer > followDistance) {
+              // Move towards player
+              targetX = player.x + Math.cos(a.angle) * followDistance;
+              targetY = player.y + Math.sin(a.angle) * followDistance;
+            } else {
+              // Stay close to player, circle around them
+              const angle = a.angle + dt * 0.5; // Slow circling
+              targetX = player.x + Math.cos(angle) * followDistance;
+              targetY = player.y + Math.sin(angle) * followDistance;
+            }
+            
+            // Dog following comments
+            if (Math.random() < 0.001) {
+              const followPhrases = ['*Woof* Right behind you!', '*Bark* I\'m here, master!', '*Woof* Watching your back!', '*Bark* Ready to protect!'];
+              const phrase = followPhrases[Math.floor(Math.random() * followPhrases.length)];
+              state.speechBubbles.push({
+                x: a.x,
+                y: a.y - 40,
+                text: phrase,
+                time: 0,
+                life: 2.0,
+                owner: a
+              });
+            }
+          }
+        }
         // DOLPHIN MEDIC LOGIC - Enhanced healing behavior with avoidance
-        if (a.animalType.type === 'dolphin') {
+        else if (a.animalType.type === 'dolphin') {
           let needsHealing = false;
           let healingTarget = null;
           let revivalTarget = null; // Initialize revivalTarget variable
