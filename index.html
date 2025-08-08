@@ -262,7 +262,6 @@
         <div class="chip">Vines: <strong id="spikes">3</strong></div>
         <div class="chip">Mines: <strong id="mines">2</strong></div>
         <div class="chip">Auto-reload: <strong id="autoReload">ON</strong></div>
-        <div class="chip">FPS: <strong id="fpsDisplay">60</strong></div>
         <div class="bars">
           <div class="bar" aria-label="Health"><div id="hpFill" class="fill" style="width:100%"></div></div>
           <div class="bar stam" aria-label="Stamina"><div id="stamFill" class="fill" style="width:100%"></div></div>
@@ -358,7 +357,7 @@
     spikes: document.getElementById('spikes'),
     mines: document.getElementById('mines'),
     autoReload: document.getElementById('autoReload'),
-    fpsDisplay: document.getElementById('fpsDisplay'),
+
     weaponInfo: document.getElementById('weaponInfo'),
   };
 
@@ -389,6 +388,8 @@
     autoReload: true, // Auto-reload when empty
     showDamage: false, // Show damage numbers
     damageNumbers: [], // Array for damage numbers
+    screenShake: 0, // Screen shake effect
+    screenShakeX: 0, screenShakeY: 0, // Screen shake offset
   };
 
   const input = {
@@ -636,6 +637,7 @@
         player.weapon = idx;
         renderWeaponHUD();
         addMessage(`Switched to ${arsenal[idx].name}`);
+        screenShake(0.1, 0.1);
         
         // Player speech bubble
         const weaponPhrases = ['Let\'s try this!', 'This should work!', 'Time for this!', 'Perfect!'];
@@ -845,20 +847,20 @@
     $hud.spikes.textContent = player.spikes;
     $hud.mines.textContent = player.mines;
     $hud.autoReload.textContent = state.autoReload ? 'ON' : 'OFF';
-    $hud.fpsDisplay.textContent = fps;
     
     // Update weapon info with enhanced details
     const currentWeapon = arsenal[player.weapon];
     const fireRate = (1/currentWeapon.fireDelay).toFixed(1);
     const damageColor = currentWeapon.damage > 80 ? '#ff4444' : currentWeapon.damage > 40 ? '#ffaa00' : '#ffffff';
     const fireRateColor = currentWeapon.fireDelay < 0.1 ? '#ff4444' : currentWeapon.fireDelay < 0.2 ? '#ffaa00' : '#ffffff';
+    const ammoColor = currentWeapon.mag <= 0 ? '#ff4444' : currentWeapon.mag <= currentWeapon.magSize * 0.2 ? '#ffaa00' : '#ffffff';
     
     $hud.weaponInfo.innerHTML = `
       <div class="weapon-stats">
         <span style="color: ${damageColor}">Damage: ${currentWeapon.damage}</span>
         <span style="color: ${fireRateColor}">Fire Rate: ${fireRate}/s</span>
         <span>Range: ${currentWeapon.speed}</span>
-        <span>${currentWeapon.auto ? 'AUTO' : 'SEMI'}</span>
+        <span style="color: ${ammoColor}">${currentWeapon.auto ? 'AUTO' : 'SEMI'}</span>
       </div>
     `;
     
@@ -873,7 +875,11 @@
     for (let i = 0; i < slots.length; i++) {
       slots[i].classList.toggle('active', i === player.weapon);
       const ammo = slots[i].querySelector('.ammo');
-      if (ammo) ammo.innerHTML = `<span>${arsenal[i].mag.toString().padStart(2,'0')}</span>/<span>${arsenal[i].reserve}</span>`;
+      if (ammo) {
+        const weapon = arsenal[i];
+        const ammoColor = weapon.mag <= 0 ? '#ff4444' : weapon.mag <= weapon.magSize * 0.2 ? '#ffaa00' : '#ffffff';
+        ammo.innerHTML = `<span style="color: ${ammoColor}">${weapon.mag.toString().padStart(2,'0')}</span>/<span>${weapon.reserve}</span>`;
+      }
     }
   }
 
@@ -1279,22 +1285,22 @@
     'Jake', 'Nova', 'Rex', 'Iris', 'Max', 'Sky', 'Leo', 'Ruby', 'Finn', 'Aria'
   ];
 
-  const soldierTypes = [
-    { name: 'Scout', color: '#4a90e2', accent: '#2a70c2', helmet: 'visor', personality: 'aggressive', 
-      arrival: ['Ready to scout!', 'Let\'s move!', 'I\'m here!'], 
-      motivational: ['Keep going!', 'We got this!', 'Stay strong!'] },
-    { name: 'Heavy', color: '#ff6b35', accent: '#d4552a', helmet: 'full', personality: 'steady', 
-      arrival: ['Heavy weapons ready!', 'Time to get serious!', 'I\'ve got your back!'], 
+  const animalCompanions = [
+    { name: 'Wolf', color: '#6a5a4a', accent: '#4a3a2a', type: 'wolf', personality: 'aggressive', 
+      arrival: ['*Howl* Ready to hunt!', 'Let\'s track them down!', 'Wolf reporting!'], 
+      motivational: ['*Growl* Keep fighting!', 'We\'re the pack!', 'Stay strong!'] },
+    { name: 'Eagle', color: '#8b4513', accent: '#6b3513', type: 'eagle', personality: 'precise', 
+      arrival: ['*Screech* Eyes in the sky!', 'I see everything!', 'Eagle ready!'], 
+      motivational: ['Stay sharp!', 'We\'re soaring!', 'Keep it up!'] },
+    { name: 'Bear', color: '#8b4513', accent: '#6b3513', type: 'bear', personality: 'steady', 
+      arrival: ['*Roar* Heavy support here!', 'Time to get serious!', 'Bear ready!'], 
       motivational: ['Stay focused!', 'We\'re unstoppable!', 'Keep fighting!'] },
-    { name: 'Sniper', color: '#9b59b6', accent: '#7b3a96', helmet: 'scope', personality: 'precise', 
-      arrival: ['Target acquired!', 'I see everything!', 'Precision ready!'], 
-      motivational: ['Stay sharp!', 'We\'re winning!', 'Keep it up!'] },
-    { name: 'Medic', color: '#27d07e', accent: '#1a9f5e', helmet: 'cross', personality: 'supportive', 
-      arrival: ['Healing ready!', 'I\'ll keep you safe!', 'Medic on duty!'], 
-      motivational: ['You\'re doing great!', 'Stay healthy!', 'We\'ll make it!'] },
-    { name: 'Veteran', color: '#8b4513', accent: '#6b3513', helmet: 'visor', personality: 'experienced', 
-      arrival: ['Veteran reporting!', 'I\'ve seen it all!', 'Let\'s show them!'], 
-      motivational: ['Experience counts!', 'We\'ve got this!', 'Stay strong!'] }
+    { name: 'Fox', color: '#ff6b35', accent: '#d4552a', type: 'fox', personality: 'aggressive', 
+      arrival: ['*Yip* Quick and ready!', 'Let\'s move fast!', 'Fox here!'], 
+      motivational: ['Stay quick!', 'We\'re fast!', 'Keep moving!'] },
+    { name: 'Owl', color: '#4a4a6a', accent: '#2a2a4a', type: 'owl', personality: 'precise', 
+      arrival: ['*Hoot* Wisdom and precision!', 'I see in the dark!', 'Owl ready!'], 
+      motivational: ['Stay wise!', 'We\'re watching!', 'Keep sharp!'] }
   ];
 
   function spawnAlly() {
@@ -1335,8 +1341,8 @@
         }
       }
       
-      const soldierType = soldierTypes[Math.floor(Math.random() * soldierTypes.length)];
-      const soldierName = soldierNames[Math.floor(Math.random() * soldierNames.length)];
+      const animalType = animalCompanions[Math.floor(Math.random() * animalCompanions.length)];
+      const animalName = animalType.name;
       
       const ally = {
         x, y,
@@ -1349,10 +1355,10 @@
         damage: 15,
         angle: 0,
         target: null,
-        type: 'soldier',
-        name: soldierName,
-        soldierType: soldierType,
-        personality: soldierType.personality
+        type: 'animal',
+        name: animalName,
+        animalType: animalType,
+        personality: animalType.personality
       };
       
       allies.push(ally);
@@ -2430,6 +2436,7 @@
     player.inv = 0.25;
     particlesBurst(player.x, player.y, '#ff6a6a', 12, 140);
     cameraFlash(0.25);
+    screenShake(0.2, 0.15);
   }
 
   function healPlayer(n) {
@@ -2507,6 +2514,7 @@
   function explosion(x, y, radius, baseDmg, color, falloff) {
     particlesBurst(x, y, color, 22, 260);
     cameraFlash(0.35);
+    screenShake(0.3, 0.2);
     for (const e of enemies) {
       const dx = e.x - x, dy = e.y - y;
       const d = Math.hypot(dx, dy);
@@ -2567,9 +2575,27 @@
   }
 
   function cameraFlash(n) { state.flash = Math.min(0.3, state.flash + n * 0.3); } // Reduced intensity
+  
+  function screenShake(intensity, duration) {
+    state.screenShake = Math.max(state.screenShake, intensity);
+    state.screenShakeX = rand(-intensity * 10, intensity * 10);
+    state.screenShakeY = rand(-intensity * 10, intensity * 10);
+  }
 
   // Draw
   function draw() {
+    // Apply screen shake
+    if (state.screenShake > 0) {
+      ctx.save();
+      ctx.translate(state.screenShakeX, state.screenShakeY);
+      state.screenShake -= state.dt;
+      if (state.screenShake <= 0) {
+        state.screenShake = 0;
+        state.screenShakeX = 0;
+        state.screenShakeY = 0;
+      }
+    }
+    
     // Background map
     drawMap();
 
@@ -2626,6 +2652,11 @@
     
     // PostFX
     postFX();
+    
+    // Restore screen shake
+    if (state.screenShake > 0) {
+      ctx.restore();
+    }
   }
 
   function drawMap() {
@@ -3168,130 +3199,182 @@
     ctx.translate(a.x, a.y);
     ctx.rotate(a.angle);
 
-    const st = a.soldierType;
+    const at = a.animalType;
     
-    // Super cute chibi soldier body with gradient
+    // Animal body with gradient
     const bodyGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, a.r);
-    bodyGrad.addColorStop(0, st.color);
-    bodyGrad.addColorStop(1, st.accent);
+    bodyGrad.addColorStop(0, at.color);
+    bodyGrad.addColorStop(1, at.accent);
     ctx.fillStyle = bodyGrad;
     roundRect(-a.r, -a.r*0.8, a.r*2, a.r*1.6, a.r*0.5); ctx.fill();
     
-    // Cute chibi helmet with shine
-    ctx.fillStyle = st.accent;
-    ctx.beginPath();
-    ctx.arc(a.r*0.4, -a.r*0.3, a.r*0.4, 0, TAU);
-    ctx.fill();
-    ctx.fillStyle = 'rgba(255,255,255,0.4)';
-    ctx.fillRect(a.r*0.2, -a.r*0.5, a.r*0.4, 2);
-    
-    // Super kawaii eyes with sparkles
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath();
-    ctx.arc(a.r*0.2, -a.r*0.3, 3, 0, TAU);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(a.r*0.6, -a.r*0.3, 3, 0, TAU);
-    ctx.fill();
-    
-    // Cute pupils with highlights
-    ctx.fillStyle = '#000000';
-    ctx.beginPath();
-    ctx.arc(a.r*0.2, -a.r*0.3, 2, 0, TAU);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(a.r*0.6, -a.r*0.3, 2, 0, TAU);
-    ctx.fill();
-    
-    // Eye highlights and sparkles
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath();
-    ctx.arc(a.r*0.1, -a.r*0.4, 0.8, 0, TAU);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(a.r*0.5, -a.r*0.4, 0.8, 0, TAU);
-    ctx.fill();
-    
-    // Cute blush
-    ctx.fillStyle = 'rgba(255,182,193,0.6)';
-    ctx.beginPath();
-    ctx.arc(a.r*0.1, -a.r*0.2, 2, 0, TAU);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(a.r*0.7, -a.r*0.2, 2, 0, TAU);
-    ctx.fill();
-    
-    // Cute mouth
-    ctx.fillStyle = '#ff69b4';
-    ctx.beginPath();
-    ctx.arc(a.r*0.4, -a.r*0.1, 1.5, 0, TAU);
-    ctx.fill();
-    
-    // Helmet details based on type with cute design
-    if (st.helmet === 'visor') {
-      // Cute visor
+    // Animal-specific details
+    if (at.type === 'wolf') {
+      // Wolf features
+      ctx.fillStyle = '#4a3a2a';
+      ctx.fillRect(-a.r*0.8, -a.r*0.6, a.r*1.6, a.r*1.2); // Body
+      
+      // Wolf head
+      ctx.fillStyle = '#3a2a1a';
+      ctx.beginPath();
+      ctx.arc(a.r*0.4, -a.r*0.3, a.r*0.4, 0, TAU);
+      ctx.fill();
+      
+      // Wolf ears
+      ctx.fillStyle = '#2a1a0a';
+      ctx.fillRect(a.r*0.2, -a.r*0.8, 4, 6);
+      ctx.fillRect(a.r*0.6, -a.r*0.8, 4, 6);
+      
+      // Wolf eyes
+      ctx.fillStyle = '#ffaa00';
+      ctx.beginPath();
+      ctx.arc(a.r*0.2, -a.r*0.3, 2.5, 0, TAU);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(a.r*0.6, -a.r*0.3, 2.5, 0, TAU);
+      ctx.fill();
+      
+      // Wolf snout
       ctx.fillStyle = '#1a1a1a';
-      ctx.fillRect(a.r*0.2, -3, 8, 6);
-      ctx.fillStyle = 'rgba(255,255,255,0.3)';
-      ctx.fillRect(a.r*0.2, -2, 8, 2);
-    } else if (st.helmet === 'full') {
-      // Cute full helmet
+      ctx.fillRect(a.r*0.3, -a.r*0.1, 6, 3);
+      
+    } else if (at.type === 'eagle') {
+      // Eagle features
+      ctx.fillStyle = '#8b4513';
+      ctx.fillRect(-a.r*0.8, -a.r*0.6, a.r*1.6, a.r*1.2); // Body
+      
+      // Eagle head
+      ctx.fillStyle = '#6b3513';
+      ctx.beginPath();
+      ctx.arc(a.r*0.4, -a.r*0.3, a.r*0.4, 0, TAU);
+      ctx.fill();
+      
+      // Eagle beak
+      ctx.fillStyle = '#ffaa00';
+      ctx.fillRect(a.r*0.6, -a.r*0.2, 8, 2);
+      
+      // Eagle eyes
+      ctx.fillStyle = '#ff4444';
+      ctx.beginPath();
+      ctx.arc(a.r*0.2, -a.r*0.3, 2.5, 0, TAU);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(a.r*0.6, -a.r*0.3, 2.5, 0, TAU);
+      ctx.fill();
+      
+    } else if (at.type === 'bear') {
+      // Bear features
+      ctx.fillStyle = '#8b4513';
+      ctx.fillRect(-a.r*0.8, -a.r*0.6, a.r*1.6, a.r*1.2); // Body
+      
+      // Bear head
+      ctx.fillStyle = '#6b3513';
+      ctx.beginPath();
+      ctx.arc(a.r*0.4, -a.r*0.3, a.r*0.5, 0, TAU);
+      ctx.fill();
+      
+      // Bear ears
+      ctx.fillStyle = '#4a2a1a';
+      ctx.fillRect(a.r*0.1, -a.r*0.8, 6, 4);
+      ctx.fillRect(a.r*0.7, -a.r*0.8, 6, 4);
+      
+      // Bear eyes
+      ctx.fillStyle = '#000000';
+      ctx.beginPath();
+      ctx.arc(a.r*0.2, -a.r*0.3, 2.5, 0, TAU);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(a.r*0.6, -a.r*0.3, 2.5, 0, TAU);
+      ctx.fill();
+      
+      // Bear snout
       ctx.fillStyle = '#1a1a1a';
-      ctx.fillRect(a.r*0.1, -4, 10, 8);
-      ctx.fillRect(a.r*0.3, -2, 4, 4);
-      ctx.fillStyle = 'rgba(255,255,255,0.2)';
-      ctx.fillRect(a.r*0.1, -3, 10, 2);
-    } else if (st.helmet === 'scope') {
-      // Cute scope attachment
-      ctx.fillStyle = '#1a1a1a';
-      ctx.fillRect(a.r*0.2, -3, 8, 6);
-      ctx.fillStyle = '#9b59b6';
-      ctx.fillRect(a.r*0.6, -2, 6, 4);
-      ctx.fillStyle = 'rgba(255,255,255,0.3)';
-      ctx.fillRect(a.r*0.6, -1, 6, 2);
-    } else if (st.helmet === 'cross') {
-      // Cute medical cross
-      ctx.fillStyle = '#1a1a1a';
-      ctx.fillRect(a.r*0.2, -3, 8, 6);
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(a.r*0.4, -2, 2, 4);
-      ctx.fillRect(a.r*0.3, -1, 4, 2);
-      ctx.fillStyle = '#ff69b4';
-      ctx.fillRect(a.r*0.35, -1.5, 3, 3);
-    }
-    
-    // Cute gun based on type
-    ctx.fillStyle = '#2a2a2a';
-    if (st.name === 'Sniper') {
-      ctx.fillRect(a.r*0.8, -3, 16, 6);
-      ctx.fillStyle = '#9b59b6';
-      ctx.fillRect(a.r*0.8, -2, 2, 4);
-    } else if (st.name === 'Heavy') {
-      ctx.fillRect(a.r*0.8, -4, 14, 8);
+      ctx.fillRect(a.r*0.3, -a.r*0.1, 8, 4);
+      
+    } else if (at.type === 'fox') {
+      // Fox features
       ctx.fillStyle = '#ff6b35';
-      ctx.fillRect(a.r*0.8, -3, 2, 6);
-    } else {
-      ctx.fillRect(a.r*0.8, -2, 12, 4);
-      ctx.fillStyle = st.color;
-      ctx.fillRect(a.r*0.8, -1, 2, 2);
+      ctx.fillRect(-a.r*0.8, -a.r*0.6, a.r*1.6, a.r*1.2); // Body
+      
+      // Fox head
+      ctx.fillStyle = '#d4552a';
+      ctx.beginPath();
+      ctx.arc(a.r*0.4, -a.r*0.3, a.r*0.4, 0, TAU);
+      ctx.fill();
+      
+      // Fox ears
+      ctx.fillStyle = '#ff4444';
+      ctx.fillRect(a.r*0.2, -a.r*0.8, 3, 5);
+      ctx.fillRect(a.r*0.6, -a.r*0.8, 3, 5);
+      
+      // Fox eyes
+      ctx.fillStyle = '#ffaa00';
+      ctx.beginPath();
+      ctx.arc(a.r*0.2, -a.r*0.3, 2.5, 0, TAU);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(a.r*0.6, -a.r*0.3, 2.5, 0, TAU);
+      ctx.fill();
+      
+      // Fox tail
+      ctx.fillStyle = '#ff4444';
+      ctx.fillRect(-a.r*1.2, -a.r*0.2, 8, 4);
+      
+    } else if (at.type === 'owl') {
+      // Owl features
+      ctx.fillStyle = '#4a4a6a';
+      ctx.fillRect(-a.r*0.8, -a.r*0.6, a.r*1.6, a.r*1.2); // Body
+      
+      // Owl head
+      ctx.fillStyle = '#2a2a4a';
+      ctx.beginPath();
+      ctx.arc(a.r*0.4, -a.r*0.3, a.r*0.5, 0, TAU);
+      ctx.fill();
+      
+      // Owl eyes
+      ctx.fillStyle = '#ffaa00';
+      ctx.beginPath();
+      ctx.arc(a.r*0.2, -a.r*0.3, 3, 0, TAU);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(a.r*0.6, -a.r*0.3, 3, 0, TAU);
+      ctx.fill();
+      
+      // Owl beak
+      ctx.fillStyle = '#ffaa00';
+      ctx.fillRect(a.r*0.4, -a.r*0.1, 4, 2);
     }
     
-    // Cute name tag with heart
+    // Animal weapon (natural attacks)
+    ctx.fillStyle = '#2a2a2a';
+    if (at.type === 'wolf') {
+      ctx.fillRect(a.r*0.8, -3, 12, 6); // Claws
+    } else if (at.type === 'eagle') {
+      ctx.fillRect(a.r*0.8, -4, 14, 8); // Talons
+    } else if (at.type === 'bear') {
+      ctx.fillRect(a.r*0.8, -5, 16, 10); // Massive paws
+    } else if (at.type === 'fox') {
+      ctx.fillRect(a.r*0.8, -2, 10, 4); // Quick strikes
+    } else if (at.type === 'owl') {
+      ctx.fillRect(a.r*0.8, -3, 12, 6); // Sharp talons
+    }
+    
+    // Animal name tag with paw print
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 10px Arial';
     ctx.textAlign = 'center';
     ctx.fillText(a.name, 0, -a.r - 20);
-    ctx.fillStyle = '#ff69b4';
-    ctx.fillText('♥', 0, -a.r - 25);
+    ctx.fillStyle = '#ffaa00';
+    ctx.fillText('🐾', 0, -a.r - 25);
     
-    // Health bar with cute design
+    // Health bar with animal design
     const hpw = a.r*2;
     ctx.fillStyle = '#0b1118';
     ctx.fillRect(-a.r, -a.r-10, hpw, 4);
     ctx.fillStyle = '#27d07e';
     ctx.fillRect(-a.r, -a.r-10, hpw * (a.hp/a.maxHp), 4);
     
-    // Cute health bar border
+    // Animal health bar border
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 1;
     ctx.strokeRect(-a.r, -a.r-10, hpw, 4);
@@ -3637,28 +3720,40 @@
     ctx.translate(player.x, player.y);
     ctx.rotate(player.angle);
 
-    // Super cute body with rounded corners
-    ctx.fillStyle = '#4a90e2';
+    // SUPER BADASS SPACE PENGUIN BODY
+    const bodyGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 16);
+    bodyGrad.addColorStop(0, '#1a1a2a');
+    bodyGrad.addColorStop(1, '#0a0a1a');
+    ctx.fillStyle = bodyGrad;
     roundRect(-14,-10,28,20,8);
     ctx.fill();
     
-    // Cute helmet with gradient
+    // Space armor plating
+    ctx.fillStyle = '#2a2a4a';
+    ctx.fillRect(-12, -8, 24, 16);
+    ctx.fillStyle = '#3a3a6a';
+    ctx.fillRect(-10, -6, 20, 12);
+    
+    // BADASS HELMET with space tech
     const helmetGrad = ctx.createRadialGradient(0, -8, 0, 0, -8, 12);
-    helmetGrad.addColorStop(0, '#2a70c2');
-    helmetGrad.addColorStop(1, '#1a50a2');
+    helmetGrad.addColorStop(0, '#1a1a3a');
+    helmetGrad.addColorStop(1, '#0a0a2a');
     ctx.fillStyle = helmetGrad;
     ctx.beginPath();
     ctx.arc(0, -8, 12, 0, TAU);
     ctx.fill();
     
-    // Cute visor with shine
-    ctx.fillStyle = '#1a1a1a';
-    ctx.fillRect(-3, -10, 6, 4);
-    ctx.fillStyle = 'rgba(255,255,255,0.3)';
-    ctx.fillRect(-2, -9, 2, 2);
-    
-    // Super cute eyes with sparkles
+    // Advanced visor with HUD
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(-4, -10, 8, 5);
+    ctx.fillStyle = '#00ff88';
+    ctx.fillRect(-3, -9, 6, 3);
     ctx.fillStyle = '#ffffff';
+    ctx.fillRect(-2, -8, 2, 1);
+    ctx.fillRect(0, -8, 2, 1);
+    
+    // BADASS EYES with targeting system
+    ctx.fillStyle = '#00ff88';
     ctx.beginPath();
     ctx.arc(-4, -9, 2.5, 0, TAU);
     ctx.fill();
@@ -3666,8 +3761,8 @@
     ctx.arc(4, -9, 2.5, 0, TAU);
     ctx.fill();
     
-    // Cute pupils with highlights
-    ctx.fillStyle = '#000000';
+    // Targeting pupils
+    ctx.fillStyle = '#ffffff';
     ctx.beginPath();
     ctx.arc(-4, -9, 1.5, 0, TAU);
     ctx.fill();
@@ -3676,7 +3771,7 @@
     ctx.fill();
     
     // Eye highlights
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = '#00ff88';
     ctx.beginPath();
     ctx.arc(-4.5, -9.5, 0.5, 0, TAU);
     ctx.fill();
@@ -3684,27 +3779,42 @@
     ctx.arc(3.5, -9.5, 0.5, 0, TAU);
     ctx.fill();
 
-    // Cute gun with details
+    // BADASS SPACE WEAPON
     ctx.fillStyle = '#2a2a2a';
     ctx.fillRect(8,-3,20,6);
-    ctx.fillRect(6,-2,4,4);
+    ctx.fillStyle = '#4a4a6a';
+    ctx.fillRect(10,-2,16,4);
+    ctx.fillStyle = '#00ff88';
+    ctx.fillRect(12,-1,2,2);
     
-    // Cute details and accessories
-    ctx.fillStyle = '#ff6b6b';
+    // Space tech details
+    ctx.fillStyle = '#ff4444';
     ctx.beginPath();
     ctx.arc(12,0,3,0,TAU);
     ctx.fill();
     
-    // Cute backpack
-    ctx.fillStyle = '#3a5a8a';
+    // Advanced backpack with thrusters
+    ctx.fillStyle = '#1a1a3a';
     ctx.fillRect(-16, -5, 8, 10);
+    ctx.fillStyle = '#ff4444';
+    ctx.fillRect(-18, -3, 2, 6);
+    ctx.fillRect(-18, 3, 2, 6);
     
-    // Cute antenna
-    ctx.fillStyle = '#ffaa00';
+    // Space antenna with targeting
+    ctx.fillStyle = '#00ff88';
     ctx.fillRect(-2, -18, 4, 8);
     ctx.beginPath();
     ctx.arc(-2, -18, 2, 0, TAU);
     ctx.fill();
+    
+    // Energy shield effect
+    if (player.inv > 0) {
+      ctx.strokeStyle = '#00ff88';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(0, 0, 18, 0, TAU);
+      ctx.stroke();
+    }
 
     ctx.restore();
 
